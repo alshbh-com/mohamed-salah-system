@@ -268,10 +268,19 @@ const Invoices = () => {
           
           ${partialDeliveryNotes[order.id] ? `<div style="margin-bottom:4px;border:1.5px solid #d4af37;border-radius:4px;padding:4px 6px;font-size:12px;background:#fffdf0;"><strong>⚠ تسليم جزئي:</strong> ${partialDeliveryNotes[order.id]}</div>` : ''}
           
-          <div style="padding:4px 5px;border:1px solid #ddd;border-radius:4px;background:#fafafa;font-size:10px;line-height:1.6;color:#444;margin-top:auto;">
-            <div>• يجب معاينة الأوردر قبل استلامه، وفي حالة وجود أي خطأ لن تتحمل الشركة مسؤولية.</div>
-            <div>• مصاريف الشحن خاصة بشركة الشحن فقط.</div>
-            <div>• لأي مشكلة تواصل معنا أو احضر مقر الشركة.</div>
+          <div style="margin-top:auto;border-radius:6px;overflow:hidden;border:1px solid #d4af37;background:linear-gradient(135deg,#fffdf5 0%,#fff8e1 100%);box-shadow:0 1px 3px rgba(0,0,0,0.08);">
+            <div style="background:linear-gradient(90deg,#d4af37,#b8932f);color:#fff;font-size:11px;font-weight:bold;padding:3px 8px;display:flex;align-items:center;gap:6px;letter-spacing:0.5px;">
+              <span style="font-size:13px;">⚠</span>
+              <span>شروط وأحكام الاستلام</span>
+            </div>
+            <div style="padding:5px 8px;font-size:10px;line-height:1.7;color:#3a3a3a;">
+              <div style="display:flex;gap:5px;align-items:flex-start;"><span style="color:#d4af37;font-weight:bold;">✓</span><span>يجب معاينة الأوردر قبل استلامه، وفي حالة وجود أي خطأ لن تتحمل الشركة المسؤولية.</span></div>
+              <div style="display:flex;gap:5px;align-items:flex-start;"><span style="color:#d4af37;font-weight:bold;">✓</span><span>مصاريف الشحن خاصة بشركة الشحن فقط.</span></div>
+              <div style="display:flex;gap:5px;align-items:flex-start;"><span style="color:#d4af37;font-weight:bold;">✓</span><span>لأي مشكلة تواصل معنا أو احضر إلى مقر الشركة.</span></div>
+            </div>
+            <div style="border-top:1px dashed #d4af37;padding:3px 8px;font-size:9px;color:#888;text-align:center;background:rgba(255,255,255,0.5);">
+              شكراً لثقتكم بنا — ${brandName}
+            </div>
           </div>
         </div>
       </div>
