@@ -287,7 +287,10 @@ export type Database = {
           description: string | null
           id: string
           payment_method: string | null
+          reason: string | null
           type: string
+          user_id: string | null
+          username: string | null
         }
         Insert: {
           amount?: number
@@ -297,7 +300,10 @@ export type Database = {
           description?: string | null
           id?: string
           payment_method?: string | null
+          reason?: string | null
           type: string
+          user_id?: string | null
+          username?: string | null
         }
         Update: {
           amount?: number
@@ -307,7 +313,10 @@ export type Database = {
           description?: string | null
           id?: string
           payment_method?: string | null
+          reason?: string | null
           type?: string
+          user_id?: string | null
+          username?: string | null
         }
         Relationships: [
           {
@@ -416,6 +425,7 @@ export type Database = {
           is_active: boolean
           name: string
           phone: string | null
+          serial_number: string | null
           total_owed: number
           total_paid: number
           updated_at: string
@@ -427,6 +437,7 @@ export type Database = {
           is_active?: boolean
           name: string
           phone?: string | null
+          serial_number?: string | null
           total_owed?: number
           total_paid?: number
           updated_at?: string
@@ -438,6 +449,7 @@ export type Database = {
           is_active?: boolean
           name?: string
           phone?: string | null
+          serial_number?: string | null
           total_owed?: number
           total_paid?: number
           updated_at?: string
@@ -560,10 +572,14 @@ export type Database = {
           created_at: string
           customer_id: string | null
           delivery_agent_id: string | null
+          discount: number
+          governorate_id: string | null
           id: string
           notes: string | null
+          order_details: Json | null
           order_number: number
           payment_date: string | null
+          payment_method: string | null
           qr_value: string | null
           shipping_cost: number
           status: Database["public"]["Enums"]["order_status"]
@@ -578,10 +594,14 @@ export type Database = {
           created_at?: string
           customer_id?: string | null
           delivery_agent_id?: string | null
+          discount?: number
+          governorate_id?: string | null
           id?: string
           notes?: string | null
+          order_details?: Json | null
           order_number?: number
           payment_date?: string | null
+          payment_method?: string | null
           qr_value?: string | null
           shipping_cost?: number
           status?: Database["public"]["Enums"]["order_status"]
@@ -596,10 +616,14 @@ export type Database = {
           created_at?: string
           customer_id?: string | null
           delivery_agent_id?: string | null
+          discount?: number
+          governorate_id?: string | null
           id?: string
           notes?: string | null
+          order_details?: Json | null
           order_number?: number
           payment_date?: string | null
+          payment_method?: string | null
           qr_value?: string | null
           shipping_cost?: number
           status?: Database["public"]["Enums"]["order_status"]
@@ -620,6 +644,13 @@ export type Database = {
             columns: ["delivery_agent_id"]
             isOneToOne: false
             referencedRelation: "delivery_agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_governorate_id_fkey"
+            columns: ["governorate_id"]
+            isOneToOne: false
+            referencedRelation: "governorates"
             referencedColumns: ["id"]
           },
         ]
@@ -1017,6 +1048,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      delete_old_activity_logs: { Args: never; Returns: undefined }
       ensure_daily_cashbox: { Args: never; Returns: undefined }
     }
     Enums: {
