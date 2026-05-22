@@ -575,8 +575,9 @@ export type Database = {
           discount: number
           governorate_id: string | null
           id: string
+          modified_amount: number | null
           notes: string | null
-          order_details: Json | null
+          order_details: string | null
           order_number: number
           payment_date: string | null
           payment_method: string | null
@@ -597,8 +598,9 @@ export type Database = {
           discount?: number
           governorate_id?: string | null
           id?: string
+          modified_amount?: number | null
           notes?: string | null
-          order_details?: Json | null
+          order_details?: string | null
           order_number?: number
           payment_date?: string | null
           payment_method?: string | null
@@ -619,8 +621,9 @@ export type Database = {
           discount?: number
           governorate_id?: string | null
           id?: string
+          modified_amount?: number | null
           notes?: string | null
-          order_details?: Json | null
+          order_details?: string | null
           order_number?: number
           payment_date?: string | null
           payment_method?: string | null
@@ -725,7 +728,7 @@ export type Database = {
       products: {
         Row: {
           category_id: string | null
-          color_options: Json | null
+          color_options: string[] | null
           created_at: string
           description: string | null
           details: string | null
@@ -738,13 +741,13 @@ export type Database = {
           offer_price: number | null
           price: number
           quantity_pricing: Json | null
-          size_options: Json | null
+          size_options: string[] | null
           stock: number
           updated_at: string
         }
         Insert: {
           category_id?: string | null
-          color_options?: Json | null
+          color_options?: string[] | null
           created_at?: string
           description?: string | null
           details?: string | null
@@ -757,13 +760,13 @@ export type Database = {
           offer_price?: number | null
           price?: number
           quantity_pricing?: Json | null
-          size_options?: Json | null
+          size_options?: string[] | null
           stock?: number
           updated_at?: string
         }
         Update: {
           category_id?: string | null
-          color_options?: Json | null
+          color_options?: string[] | null
           created_at?: string
           description?: string | null
           details?: string | null
@@ -776,7 +779,7 @@ export type Database = {
           offer_price?: number | null
           price?: number
           quantity_pricing?: Json | null
-          size_options?: Json | null
+          size_options?: string[] | null
           stock?: number
           updated_at?: string
         }
@@ -1050,6 +1053,7 @@ export type Database = {
     Functions: {
       delete_old_activity_logs: { Args: never; Returns: undefined }
       ensure_daily_cashbox: { Args: never; Returns: undefined }
+      reset_order_sequence: { Args: never; Returns: undefined }
     }
     Enums: {
       order_status:
