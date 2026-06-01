@@ -214,106 +214,93 @@ const Invoices = () => {
         }
       }
       return `<tr>
-        <td style="border-bottom:1px solid #e5e5e5;padding:5px 6px;font-size:12px;color:#111;">${productName || '-'}</td>
-        <td style="border-bottom:1px solid #e5e5e5;padding:5px 6px;text-align:center;font-size:12px;color:#444;">${itemSize || '-'}</td>
-        <td style="border-bottom:1px solid #e5e5e5;padding:5px 6px;text-align:center;font-size:12px;color:#444;">${itemColor || '-'}</td>
-        <td style="border-bottom:1px solid #e5e5e5;padding:5px 6px;text-align:center;font-size:12px;font-weight:700;">${quantity}</td>
-        <td style="border-bottom:1px solid #e5e5e5;padding:5px 6px;text-align:left;font-size:12px;font-weight:700;">${itemTotal.toFixed(0)} ج.م</td>
+        <td style="border:1px solid #000;padding:6px;font-size:12px;text-align:center;color:#000;">${productName || '-'}</td>
+        <td style="border:1px solid #000;padding:6px;font-size:12px;text-align:center;color:#000;font-weight:700;">${quantity}</td>
+        <td style="border:1px solid #000;padding:6px;font-size:12px;text-align:center;color:#000;">${itemSize || '-'}</td>
+        <td style="border:1px solid #000;padding:6px;font-size:12px;text-align:center;color:#000;">${itemColor || '-'}</td>
+        <td style="border:1px solid #000;padding:6px;font-size:12px;text-align:center;color:#000;font-weight:700;">${itemTotal.toFixed(0)} ج.م</td>
       </tr>`;
     }).join('');
 
+    const dateStr = new Date(order.created_at).toLocaleDateString('ar-EG');
+    const shortDate = new Date(order.created_at).toLocaleDateString('ar-EG', { day: 'numeric', month: 'numeric' });
+    const trackCode = order.tracking_code || `TRK-${String(orderNo).padStart(6, '0')}`;
+
     return `<div class="invoice-cell">
-      <div style="position:relative;width:100%;height:100%;padding:5mm;box-sizing:border-box;font-family:Arial,sans-serif;display:flex;flex-direction:column;background:#fff;">
-        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-30deg);font-size:42px;font-weight:900;color:rgba(0,0,0,0.05);pointer-events:none;z-index:0;white-space:nowrap;letter-spacing:4px;">${watermarkText}</div>
+      <div style="position:relative;width:100%;height:100%;padding:6mm;box-sizing:border-box;font-family:Arial,sans-serif;display:flex;flex-direction:column;background:#fff;color:#000;">
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-30deg);font-size:46px;font-weight:900;color:rgba(0,0,0,0.05);pointer-events:none;z-index:0;white-space:nowrap;letter-spacing:4px;">${watermarkText}</div>
 
         <div style="position:relative;z-index:1;display:flex;flex-direction:column;height:100%;">
 
-          <!-- 1) HEADER : brand + invoice meta -->
-          <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:6px;border-bottom:2px solid #111;">
-            <div style="display:flex;align-items:center;gap:8px;">
+          <!-- 1) HEADER : brand centered + invoice no + tracking -->
+          <div style="position:relative;text-align:center;padding-bottom:6px;">
+            <span style="position:absolute;top:0;right:0;font-size:11px;font-weight:700;color:#000;">فاتورة #${orderNo}</span>
+            <span style="position:absolute;top:0;left:0;font-size:10px;color:#000;">${trackCode}</span>
+            <div style="display:inline-flex;align-items:center;gap:6px;border:1px solid #000;padding:4px 14px;">
               ${logoHtml}
-              <div style="display:flex;flex-direction:column;line-height:1.1;">
-                <span style="font-size:18px;font-weight:900;color:#111;letter-spacing:1px;">${brandName}</span>
-                <span style="font-size:9px;color:#888;letter-spacing:3px;">INVOICE / فاتورة</span>
-              </div>
-            </div>
-            <div style="text-align:left;">
-              <div style="font-size:9px;color:#888;letter-spacing:1px;">رقم الفاتورة</div>
-              <div style="font-size:17px;font-weight:900;color:#d4af37;">#${orderNo}</div>
-              <div style="font-size:9px;color:#666;margin-top:1px;">${new Date(order.created_at).toLocaleDateString('ar-EG')}</div>
+              <span style="font-size:17px;font-weight:700;color:#000;">${brandName}</span>
             </div>
           </div>
 
           <!-- 2) BARCODE -->
-          <div style="text-align:center;padding:5px 0 3px;border-bottom:1px dashed #ccc;">
-            <img src="${generateBarcodeDataUrl(order.tracking_code || `ORD-${orderNo}`, { width: 1.5, height: 32, fontSize: 10, margin: 0 })}" style="max-height:38px;" />
+          <div style="text-align:center;padding:4px 0;">
+            <img src="${generateBarcodeDataUrl(trackCode, { width: 1.6, height: 36, fontSize: 11, margin: 0 })}" style="max-height:42px;" />
           </div>
 
-          <!-- 3) CUSTOMER -->
-          <div style="padding:6px 4px;border-bottom:1px dashed #ccc;">
-            <div style="font-size:9px;color:#888;letter-spacing:2px;margin-bottom:3px;">بيانات العميل</div>
-            <div style="font-size:13px;font-weight:700;color:#111;margin-bottom:2px;">${order.customers?.name || '-'}</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px 8px;font-size:11px;color:#333;line-height:1.5;">
-              <div><span style="color:#888;">هاتف:</span> ${order.customers?.phone || '-'}</div>
-              <div><span style="color:#888;">محافظة:</span> ${order.governorates?.name || order.customers?.governorate || '-'}</div>
-              ${order.customers?.phone2 ? `<div><span style="color:#888;">هاتف 2:</span> ${order.customers.phone2}</div>` : ''}
-              <div><span style="color:#888;">المندوب:</span> ${order.delivery_agents?.name || '—'}</div>
+          <!-- 3) CUSTOMER INFO -->
+          <div style="border:1px solid #000;padding:6px 8px;font-size:12px;color:#000;line-height:1.7;">
+            <div style="display:flex;justify-content:space-between;">
+              <span>📅 التاريخ: ${dateStr}</span>
+              <span>👤 العميل: ${order.customers?.name || '-'}</span>
             </div>
-            <div style="font-size:11px;color:#333;margin-top:3px;"><span style="color:#888;">العنوان:</span> ${order.customers?.address || '-'}</div>
-            ${order.notes ? `<div style="font-size:10px;color:#666;margin-top:3px;font-style:italic;">ملاحظة: ${order.notes}</div>` : ''}
+            <div>📞 هاتف: ${order.customers?.phone || '-'}${order.customers?.phone2 ? ` / ${order.customers.phone2}` : ''}</div>
+            <div>🏛 المحافظة: ${order.governorates?.name || order.customers?.governorate || '-'}</div>
+            <div>📍 العنوان: ${order.customers?.address || '-'}</div>
+            ${order.notes ? `<div style="font-style:italic;">📝 ملاحظة: ${order.notes}</div>` : ''}
           </div>
 
-          <!-- 4) ITEMS -->
-          <div style="flex:1;padding:5px 0;overflow:hidden;">
+          <!-- 4) ITEMS TABLE -->
+          <div style="margin-top:6px;">
             <table style="width:100%;border-collapse:collapse;">
               <thead>
                 <tr>
-                  <th style="text-align:right;padding:4px 6px;background:#111;color:#fff;font-size:10px;letter-spacing:1px;font-weight:700;">المنتج</th>
-                  <th style="padding:4px 6px;background:#111;color:#fff;font-size:10px;letter-spacing:1px;font-weight:700;">المقاس</th>
-                  <th style="padding:4px 6px;background:#111;color:#fff;font-size:10px;letter-spacing:1px;font-weight:700;">اللون</th>
-                  <th style="padding:4px 6px;background:#111;color:#fff;font-size:10px;letter-spacing:1px;font-weight:700;">الكمية</th>
-                  <th style="text-align:left;padding:4px 6px;background:#111;color:#fff;font-size:10px;letter-spacing:1px;font-weight:700;">السعر</th>
+                  <th style="border:1px solid #000;padding:6px;background:#fff;color:#000;font-size:12px;font-weight:700;">المنتج</th>
+                  <th style="border:1px solid #000;padding:6px;background:#fff;color:#000;font-size:12px;font-weight:700;">الكمية</th>
+                  <th style="border:1px solid #000;padding:6px;background:#fff;color:#000;font-size:12px;font-weight:700;">المقاس</th>
+                  <th style="border:1px solid #000;padding:6px;background:#fff;color:#000;font-size:12px;font-weight:700;">اللون</th>
+                  <th style="border:1px solid #000;padding:6px;background:#fff;color:#000;font-size:12px;font-weight:700;">السعر</th>
                 </tr>
               </thead>
               <tbody>${rowsHtml}</tbody>
             </table>
           </div>
 
-          <!-- 5) TOTALS -->
-          <div style="display:flex;justify-content:space-between;align-items:stretch;gap:6px;margin-top:4px;">
-            <div style="flex:1;font-size:10px;color:#555;display:flex;flex-direction:column;justify-content:center;padding:0 4px;">
-              <div>عدد القطع: <strong style="color:#111;">${itemsCount}</strong></div>
-              <div style="margin-top:2px;">المنتجات: <strong style="color:#111;">${totalAmount.toFixed(0)} ج.م</strong></div>
-              <div style="margin-top:2px;">الشحن: <strong style="color:#111;">${customerShipping.toFixed(0)} ج.م</strong></div>
-            </div>
-            <div style="background:#d4af37;color:#111;padding:8px 12px;border-radius:4px;text-align:center;min-width:42%;">
-              <div style="font-size:9px;letter-spacing:2px;font-weight:700;opacity:0.85;">المبلغ المطلوب</div>
-              <div style="font-size:22px;font-weight:900;line-height:1.1;margin-top:2px;">${totalPrice.toFixed(0)} <span style="font-size:11px;">ج.م</span></div>
-            </div>
+          <!-- 5) SUMMARY ROW -->
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 4px;font-size:12px;color:#000;font-weight:600;flex-wrap:wrap;gap:6px;">
+            <span>المنتجات: ${totalAmount.toFixed(0)} ج.م</span>
+            <span>الشحن: ${customerShipping.toFixed(0)} ج.م</span>
+            <span>المندوب: ${order.delivery_agents?.name || '—'} ${shortDate}</span>
           </div>
 
-          ${partialDeliveryNotes[order.id] ? `<div style="margin-top:4px;border:1px solid #d4af37;border-radius:3px;padding:3px 6px;font-size:10px;background:#fffdf0;color:#7a5e00;"><strong>⚠ تسليم جزئي:</strong> ${partialDeliveryNotes[order.id]}</div>` : ''}
+          <!-- 6) TOTAL BOX -->
+          <div style="border:2px solid #000;padding:8px;text-align:center;font-size:16px;font-weight:900;color:#000;">
+            💰 الإجمالي: ${totalPrice.toFixed(0)} ج.م
+          </div>
 
-          <!-- 6) FOOTER : terms -->
-          <div style="position:relative;margin-top:8px;padding-top:10px;border-top:1px dashed #555;">
-            <span style="position:absolute;top:-7px;right:8px;background:#fff;padding:0 6px;font-size:9px;letter-spacing:3px;color:#555;font-weight:700;">شروط الاستلام</span>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px 12px;font-size:10px;line-height:1.5;color:#333;">
-              <div><span style="color:#888;font-weight:700;">01.</span> معاينة الأوردر قبل الاستلام.</div>
-              <div><span style="color:#888;font-weight:700;">02.</span> الشحن تابع لشركة الشحن.</div>
-              <div><span style="color:#888;font-weight:700;">03.</span> لا مسؤولية بعد الاستلام.</div>
-              <div><span style="color:#888;font-weight:700;">04.</span> للشكاوى تواصل مع المقر.</div>
-            </div>
-            <div style="margin-top:6px;display:flex;justify-content:space-between;align-items:center;font-size:9px;color:#888;letter-spacing:1px;">
-              <span style="font-weight:700;color:#555;">${brandName}</span>
-              <span>— شكراً لثقتكم —</span>
-              <span style="font-weight:700;color:#555;">#${order.order_number || ''}</span>
-            </div>
+          ${partialDeliveryNotes[order.id] ? `<div style="margin-top:4px;border:1px solid #000;padding:4px 6px;font-size:10px;color:#000;"><strong>⚠ تسليم جزئي:</strong> ${partialDeliveryNotes[order.id]}</div>` : ''}
+
+          <!-- 7) FOOTER : terms -->
+          <div style="margin-top:auto;padding-top:8px;font-size:11px;color:#000;line-height:1.7;border-bottom:1px dashed #000;padding-bottom:6px;">
+            <div>• يجب معاينة الأوردر قبل استلامه، وفي حالة وجود أي خطأ لن تتحمل الشركة مسؤولية.</div>
+            <div>• مصاريف الشحن خاصة بشركة الشحن فقط.</div>
+            <div>• لأي مشكلة تواصل معنا أو احضر مقر الشركة.</div>
           </div>
 
         </div>
       </div>
     </div>`;
   };
+
 
   const handlePrint = () => {
     const ordersToPrint = filteredOrders?.filter(o => selectedOrders.includes(o.id));
