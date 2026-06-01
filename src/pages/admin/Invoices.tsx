@@ -295,16 +295,18 @@ const Invoices = () => {
           ${partialDeliveryNotes[order.id] ? `<div style="margin-top:4px;border:1px solid #d4af37;border-radius:3px;padding:3px 6px;font-size:10px;background:#fffdf0;color:#7a5e00;"><strong>⚠ تسليم جزئي:</strong> ${partialDeliveryNotes[order.id]}</div>` : ''}
 
           <!-- 6) FOOTER : terms -->
-          <div style="margin-top:5px;padding-top:5px;border-top:1px solid #111;">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px 10px;font-size:9px;line-height:1.4;color:#444;">
-              <div>• معاينة الأوردر قبل الاستلام.</div>
-              <div>• الشحن تابع لشركة الشحن.</div>
-              <div>• لا مسؤولية بعد الاستلام.</div>
-              <div>• للشكاوى تواصل مع المقر.</div>
+          <div style="position:relative;margin-top:8px;padding-top:10px;border-top:1px dashed #555;">
+            <span style="position:absolute;top:-7px;right:8px;background:#fff;padding:0 6px;font-size:9px;letter-spacing:3px;color:#555;font-weight:700;">شروط الاستلام</span>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px 12px;font-size:10px;line-height:1.5;color:#333;">
+              <div><span style="color:#888;font-weight:700;">01.</span> معاينة الأوردر قبل الاستلام.</div>
+              <div><span style="color:#888;font-weight:700;">02.</span> الشحن تابع لشركة الشحن.</div>
+              <div><span style="color:#888;font-weight:700;">03.</span> لا مسؤولية بعد الاستلام.</div>
+              <div><span style="color:#888;font-weight:700;">04.</span> للشكاوى تواصل مع المقر.</div>
             </div>
-            <div style="margin-top:4px;display:flex;justify-content:space-between;align-items:center;font-size:9px;color:#888;letter-spacing:1px;">
-              <span>${brandName}</span>
-              <span>— شكراً لتعاملكم معنا —</span>
+            <div style="margin-top:6px;display:flex;justify-content:space-between;align-items:center;font-size:9px;color:#888;letter-spacing:1px;">
+              <span style="font-weight:700;color:#555;">${brandName}</span>
+              <span>— شكراً لثقتكم —</span>
+              <span style="font-weight:700;color:#555;">#${order.order_number || ''}</span>
             </div>
           </div>
 
