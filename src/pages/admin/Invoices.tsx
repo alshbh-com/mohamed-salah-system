@@ -185,13 +185,12 @@ const Invoices = () => {
     const totalAmount = parseFloat(order.total_amount.toString());
     const customerShipping = parseFloat((order.shipping_cost || 0).toString());
     const totalPrice = totalAmount + customerShipping;
-    
-    const logoHtml = logoUrl 
-      ? `<img src="${logoUrl}" style="max-width:40px;max-height:40px;object-fit:contain;" />`
+
+    const logoHtml = logoUrl
+      ? `<img src="${logoUrl}" style="width:28px;height:28px;object-fit:contain;display:block;" />`
       : '';
-    
+
     const orderNo = order.order_number || order.id.slice(0, 8);
-    const itemsCount = order.order_items?.reduce((s: number, it: any) => s + (it.quantity || 1), 0) || 0;
 
     const rowsHtml = (order.order_items || []).map((item: any) => {
       const quantity = item.quantity || 1;
@@ -214,84 +213,67 @@ const Invoices = () => {
         }
       }
       return `<tr>
-        <td style="border:1px solid #000;padding:6px;font-size:12px;text-align:center;color:#000;">${productName || '-'}</td>
-        <td style="border:1px solid #000;padding:6px;font-size:12px;text-align:center;color:#000;font-weight:700;">${quantity}</td>
-        <td style="border:1px solid #000;padding:6px;font-size:12px;text-align:center;color:#000;">${itemSize || '-'}</td>
-        <td style="border:1px solid #000;padding:6px;font-size:12px;text-align:center;color:#000;">${itemColor || '-'}</td>
-        <td style="border:1px solid #000;padding:6px;font-size:12px;text-align:center;color:#000;font-weight:700;">${itemTotal.toFixed(0)} ج.م</td>
+        <td class="td name">${productName || '-'}</td>
+        <td class="td c">${quantity}</td>
+        <td class="td c">${itemSize || '-'}</td>
+        <td class="td c">${itemColor || '-'}</td>
+        <td class="td c b">${itemTotal.toFixed(0)}</td>
       </tr>`;
     }).join('');
 
     const dateStr = new Date(order.created_at).toLocaleDateString('ar-EG');
-    const shortDate = new Date(order.created_at).toLocaleDateString('ar-EG', { day: 'numeric', month: 'numeric' });
     const trackCode = order.tracking_code || `TRK-${String(orderNo).padStart(6, '0')}`;
 
     return `<div class="invoice-cell">
-      <div style="position:relative;width:100%;height:100%;padding:6mm;box-sizing:border-box;font-family:Arial,sans-serif;display:flex;flex-direction:column;background:#fff;color:#000;">
-        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-30deg);font-size:46px;font-weight:900;color:rgba(0,0,0,0.05);pointer-events:none;z-index:0;white-space:nowrap;letter-spacing:4px;">${watermarkText}</div>
+      <div class="inv-root">
+        <div class="wm">${watermarkText}</div>
+        <div class="inv-body">
 
-        <div style="position:relative;z-index:1;display:flex;flex-direction:column;height:100%;">
-
-          <!-- 1) HEADER : brand centered + invoice no + tracking -->
-          <div style="position:relative;text-align:center;padding-bottom:6px;">
-            <span style="position:absolute;top:0;right:0;font-size:11px;font-weight:700;color:#000;">فاتورة #${orderNo}</span>
-            <span style="position:absolute;top:0;left:0;font-size:10px;color:#000;">${trackCode}</span>
-            <div style="display:inline-flex;align-items:center;gap:6px;border:1px solid #000;padding:4px 14px;">
+          <div class="hdr">
+            <div class="hdr-side right">#${orderNo}</div>
+            <div class="hdr-side left">${trackCode}</div>
+            <div class="brand">
               ${logoHtml}
-              <span style="font-size:17px;font-weight:700;color:#000;">${brandName}</span>
+              <span>${brandName}</span>
             </div>
           </div>
 
-          <!-- 2) BARCODE -->
-          <div style="text-align:center;padding:4px 0;">
-            <img src="${generateBarcodeDataUrl(trackCode, { width: 1.6, height: 36, fontSize: 11, margin: 0 })}" style="max-height:42px;" />
+          <div class="barcode">
+            <img src="${generateBarcodeDataUrl(trackCode, { width: 1.4, height: 30, fontSize: 10, margin: 0 })}" />
           </div>
 
-          <!-- 3) CUSTOMER INFO -->
-          <div style="border:1px solid #000;padding:6px 8px;font-size:12px;color:#000;line-height:1.7;">
-            <div style="display:flex;justify-content:space-between;">
-              <span>📅 التاريخ: ${dateStr}</span>
-              <span>👤 العميل: ${order.customers?.name || '-'}</span>
-            </div>
-            <div>📞 هاتف: ${order.customers?.phone || '-'}${order.customers?.phone2 ? ` / ${order.customers.phone2}` : ''}</div>
-            <div>🏛 المحافظة: ${order.governorates?.name || order.customers?.governorate || '-'}</div>
-            <div>📍 العنوان: ${order.customers?.address || '-'}</div>
-            ${order.notes ? `<div style="font-style:italic;">📝 ملاحظة: ${order.notes}</div>` : ''}
+          <div class="info">
+            <div class="row"><span><b>التاريخ:</b> ${dateStr}</span><span><b>العميل:</b> ${order.customers?.name || '-'}</span></div>
+            <div class="row"><span><b>هاتف:</b> ${order.customers?.phone || '-'}${order.customers?.phone2 ? ` / ${order.customers.phone2}` : ''}</span><span><b>المحافظة:</b> ${order.governorates?.name || order.customers?.governorate || '-'}</span></div>
+            <div><b>العنوان:</b> ${order.customers?.address || '-'}</div>
+            ${order.notes ? `<div class="note"><b>ملاحظة:</b> ${order.notes}</div>` : ''}
           </div>
 
-          <!-- 4) ITEMS TABLE -->
-          <div style="margin-top:6px;">
-            <table style="width:100%;border-collapse:collapse;">
-              <thead>
-                <tr>
-                  <th style="border:1px solid #000;padding:6px;background:#fff;color:#000;font-size:12px;font-weight:700;">المنتج</th>
-                  <th style="border:1px solid #000;padding:6px;background:#fff;color:#000;font-size:12px;font-weight:700;">الكمية</th>
-                  <th style="border:1px solid #000;padding:6px;background:#fff;color:#000;font-size:12px;font-weight:700;">المقاس</th>
-                  <th style="border:1px solid #000;padding:6px;background:#fff;color:#000;font-size:12px;font-weight:700;">اللون</th>
-                  <th style="border:1px solid #000;padding:6px;background:#fff;color:#000;font-size:12px;font-weight:700;">السعر</th>
-                </tr>
-              </thead>
-              <tbody>${rowsHtml}</tbody>
-            </table>
+          <table class="items">
+            <thead>
+              <tr>
+                <th class="th">المنتج</th>
+                <th class="th">الكمية</th>
+                <th class="th">المقاس</th>
+                <th class="th">اللون</th>
+                <th class="th">السعر</th>
+              </tr>
+            </thead>
+            <tbody>${rowsHtml}</tbody>
+          </table>
+
+          <div class="summary">
+            <span>المنتجات: <b>${totalAmount.toFixed(0)}</b></span>
+            <span>الشحن: <b>${customerShipping.toFixed(0)}</b></span>
+            <span>المندوب: <b>${order.delivery_agents?.name || '—'}</b></span>
           </div>
 
-          <!-- 5) SUMMARY ROW -->
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 4px;font-size:12px;color:#000;font-weight:600;flex-wrap:wrap;gap:6px;">
-            <span>المنتجات: ${totalAmount.toFixed(0)} ج.م</span>
-            <span>الشحن: ${customerShipping.toFixed(0)} ج.م</span>
-            <span>المندوب: ${order.delivery_agents?.name || '—'} ${shortDate}</span>
-          </div>
+          <div class="total">الإجمالي: ${totalPrice.toFixed(0)} ج.م</div>
 
-          <!-- 6) TOTAL BOX -->
-          <div style="border:2px solid #000;padding:8px;text-align:center;font-size:16px;font-weight:900;color:#000;">
-            💰 الإجمالي: ${totalPrice.toFixed(0)} ج.م
-          </div>
+          ${partialDeliveryNotes[order.id] ? `<div class="partial"><b>تسليم جزئي:</b> ${partialDeliveryNotes[order.id]}</div>` : ''}
 
-          ${partialDeliveryNotes[order.id] ? `<div style="margin-top:4px;border:1px solid #000;padding:4px 6px;font-size:10px;color:#000;"><strong>⚠ تسليم جزئي:</strong> ${partialDeliveryNotes[order.id]}</div>` : ''}
-
-          <!-- 7) FOOTER : terms -->
-          <div style="margin-top:auto;padding-top:8px;font-size:11px;color:#000;line-height:1.7;border-bottom:1px dashed #000;padding-bottom:6px;">
-            <div>• يجب معاينة الأوردر قبل استلامه، وفي حالة وجود أي خطأ لن تتحمل الشركة مسؤولية.</div>
+          <div class="footer">
+            <div>• يجب معاينة الأوردر قبل استلامه، وفي حالة وجود أي خطأ لن تتحمل الشركة المسؤولية.</div>
             <div>• مصاريف الشحن خاصة بشركة الشحن فقط.</div>
             <div>• لأي مشكلة تواصل معنا أو احضر مقر الشركة.</div>
           </div>
@@ -325,23 +307,62 @@ const Invoices = () => {
     for (let i = 0; i < cells.length; i += 4) {
       const pageCells = cells.slice(i, i + 4);
       while (pageCells.length < 4) {
-        pageCells.push('<div class="invoice-cell"></div>');
+        pageCells.push('<div class="invoice-cell empty"></div>');
       }
       pagesHTML += `<div class="page">${pageCells.join('')}</div>`;
     }
 
-    printWindow.document.write(`<html dir="rtl"><head><title>طباعة الفواتير</title>
+    printWindow.document.write(`<html dir="rtl"><head><meta charset="utf-8"><title>طباعة الفواتير</title>
       <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:Arial,sans-serif}
-        .page{width:210mm;height:297mm;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:0;page-break-after:always}
-        .page:last-child{page-break-after:auto}
-        .invoice-cell{width:105mm;height:148.5mm;border:0.5px dashed #ccc;overflow:hidden;box-sizing:border-box}
+        *{margin:0;padding:0;box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+        html,body{background:#fff;color:#000;font-family:'Cairo','Tajawal',Arial,sans-serif}
         @page{margin:0;size:A4}
-        @media print{.invoice-cell{border:0.5px dashed #bbb}}
+        .page{width:210mm;height:297mm;display:grid;grid-template-columns:105mm 105mm;grid-template-rows:148.5mm 148.5mm;page-break-after:always;overflow:hidden}
+        .page:last-child{page-break-after:auto}
+        .invoice-cell{width:105mm;height:148.5mm;border:0.5px dashed #bbb;overflow:hidden;position:relative;background:#fff}
+        .invoice-cell.empty{border:0.5px dashed #ddd}
+        .inv-root{position:relative;width:100%;height:100%;padding:4mm;box-sizing:border-box;overflow:hidden}
+        .wm{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-28deg);font-size:38px;font-weight:900;color:rgba(0,0,0,0.06);pointer-events:none;white-space:nowrap;letter-spacing:3px;z-index:0}
+        .inv-body{position:relative;z-index:1;display:flex;flex-direction:column;height:100%;gap:2mm}
+
+        .hdr{position:relative;text-align:center;min-height:14mm}
+        .hdr-side{position:absolute;top:2px;font-size:10px;font-weight:700}
+        .hdr-side.right{right:0}
+        .hdr-side.left{left:0}
+        .brand{display:inline-flex;align-items:center;gap:6px;border:1.5px solid #000;padding:4px 12px;border-radius:2px}
+        .brand span{font-size:15px;font-weight:800;letter-spacing:0.5px}
+
+        .barcode{text-align:center}
+        .barcode img{max-height:34px}
+
+        .info{border:1px solid #000;padding:3mm;font-size:10px;line-height:1.6}
+        .info .row{display:flex;justify-content:space-between;gap:6px}
+        .info b{font-weight:700}
+        .info .note{font-style:italic;margin-top:2px}
+
+        .items{width:100%;border-collapse:collapse;table-layout:fixed}
+        .items .th{border:1px solid #000;padding:3px 2px;background:#f0f0f0;font-size:10px;font-weight:800;text-align:center}
+        .items .td{border:1px solid #000;padding:3px 2px;font-size:10px}
+        .items .td.c{text-align:center}
+        .items .td.b{font-weight:800}
+        .items .td.name{text-align:right;padding-right:4px;word-wrap:break-word;overflow-wrap:break-word}
+        .items col.name{width:38%}
+        .items thead .th:nth-child(1),.items tbody .td:nth-child(1){width:38%}
+        .items thead .th:nth-child(2),.items tbody .td:nth-child(2){width:12%}
+        .items thead .th:nth-child(3),.items tbody .td:nth-child(3){width:14%}
+        .items thead .th:nth-child(4),.items tbody .td:nth-child(4){width:18%}
+        .items thead .th:nth-child(5),.items tbody .td:nth-child(5){width:18%}
+
+        .summary{display:flex;justify-content:space-between;align-items:center;padding:1mm 1mm;font-size:10px;font-weight:600;border-bottom:1px dashed #000;flex-wrap:wrap;gap:4px}
+
+        .total{border:2px solid #000;padding:5px 8px;text-align:center;font-size:14px;font-weight:900;background:#fafafa}
+
+        .partial{border:1px solid #000;padding:3px 5px;font-size:9px}
+
+        .footer{margin-top:auto;padding-top:3px;font-size:8.5px;line-height:1.55;border-top:1px dashed #000}
       </style></head><body>${pagesHTML}</body></html>`);
     printWindow.document.close();
-    setTimeout(() => printWindow.print(), 150);
+    setTimeout(() => { printWindow.focus(); printWindow.print(); }, 300);
   };
 
   // تحديد/إلغاء تحديد الكل

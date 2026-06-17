@@ -199,20 +199,29 @@ export type Database = {
         Row: {
           created_at: string
           event: string
+          event_type: string | null
           id: string
+          metadata: Json | null
           product_id: string | null
+          session_id: string | null
         }
         Insert: {
           created_at?: string
           event: string
+          event_type?: string | null
           id?: string
+          metadata?: Json | null
           product_id?: string | null
+          session_id?: string | null
         }
         Update: {
           created_at?: string
           event?: string
+          event_type?: string | null
           id?: string
+          metadata?: Json | null
           product_id?: string | null
+          session_id?: string | null
         }
         Relationships: [
           {
